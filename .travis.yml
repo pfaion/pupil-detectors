@@ -51,6 +51,7 @@ win_base_job: &win_base_job
 
 ubuntu_base_job: &ubuntu_base_job
   os: linux
+  language: sh
   services: docker
   before_install:
     - docker pull pupillabs/pupil-detectors:linux-latest
@@ -60,7 +61,7 @@ ubuntu_base_job: &ubuntu_base_job
       docker run --rm
       -v `pwd`:/io
       pupillabs/pupil-detectors:linux-latest
-      /io/.travis/linux_build_wheel.sh
+      /io/.travis/linux_build_wheels.sh
   
 
 ################################################################################
