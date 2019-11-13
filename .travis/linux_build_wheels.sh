@@ -1,21 +1,29 @@
 #!/bin/bash
 
-# roughly adjusted from the official manylinux build example:
+# see official manylinux build example:
 # https://github.com/pypa/python-manylinux-demo/blob/master/travis/build-wheels.sh
 
 set -e -x
 PLAT=manylinux2010_x86_64
 
-# Use python 3.6
-export PATH=/opt/python/cp36-cp36m/bin:$PATH
+PATH_ORIG=$PATH
+for py in "36" "37"
+do
+    # Select python
+    export PATH="/opt/python/cp${py}-cp${py}m/bin:${PATH_ORIG}"
 
-# Compile wheel
-pip wheel --no-deps /io/ -w wheelhouse/
+    # Compile wheel
+    pip wheel --no-deps /io/ -w wheelhouse/
 
-# Bundle external shared libraries into the wheel
-auditwheel repair wheelhouse/*.whl --plat $PLAT -w /io/wheelhouse/
+    # Bundle external shared libraries into the wheels
+    auditwheel repair wheelhouse/*.whl --plat $PLAT -w wheelhouse/test/
 
-# run tests
-pip install tox
-cd /io
-tox --installpkg ./wheelhouse/*.whl
+    # Run tests
+    pip install tox
+    tox --installpkg wheelhouse/test/*.whl -c /io/ -e "py${py}"
+
+    # Copy to output and remove tmp
+    mkdir -p /io/wheelhouse
+    mv wheelhouse/test/*.whl /io/wheelhouse/
+    rm -rf wheelhouse
+done
