@@ -27,15 +27,22 @@ osx_base_job: &osx_base_job
   osx_image: xcode8.3
   language: sh
   before_install:
+    - brew install opencv ceres-solver
     - brew upgrade pyenv
-    - pyenv install -s $PYTHON_VERSION
-    - export PYENV_VERSION=$PYTHON_VERSION
-    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-    - pip3 install -U pip
+    - pyenv install -s 3.6.8
+    - pyenv install -s 3.7.4
   install:
-    - pip3 install pep517 tox
-    - python3 -m pep517.build .
+    - pyenv global 3.6.8
+    - pip wheel --no-deps -w wheel_test .
+    - tox --installpkg wheel_test/*.whl -e py36
+    - mv wheel_test/*.whl wheelhouse/
 
+    - pyenv global 3.7.4
+    - pip wheel --no-deps -w wheel_test .
+    - tox --installpkg wheel_test/*.whl -e py37
+    - mv wheel_test/*.whl wheelhouse/
+
+    
 win_base_job: &win_base_job
   os: windows
   language: sh
@@ -70,9 +77,8 @@ ubuntu_base_job: &ubuntu_base_job
 
 matrix:
   include:
-    # - name: "Python 3.6.8 on OSX 10.12 (xcode8.3)"
-    #   <<: *osx_base_job
-    #   <<: *env_py36
+    - name: "OSX 10.12 (xcode8.3)"
+      <<: *osx_base_job
 
     # - name: "Python 3.7.4 on OSX 10.12 (xcode8.3)"
     #   <<: *osx_base_job
