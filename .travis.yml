@@ -27,7 +27,8 @@ osx_base_job: &osx_base_job
   osx_image: xcode8.3
   language: sh
   before_install:
-    - brew install opencv ceres-solver
+    - brew install opencv@3
+    - brew install ceres-solver
     - brew upgrade pyenv
     - pyenv install -s 3.6.8
     - pyenv install -s 3.7.4
