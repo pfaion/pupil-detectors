@@ -27,7 +27,7 @@ osx_base_job: &osx_base_job
   osx_image: xcode8.3
   language: sh
   before_install:
-    - brew install ceres-solver
+    - brew install -v ceres-solver
     - wget https://github.com/opencv/opencv/archive/3.4.6.zip
     - unzip 3.4.6.zip
     - cd opencv-3.4.6
@@ -120,7 +120,7 @@ matrix:
       <<: *osx_base_job
 
     - name: "OSX 10.14 (xcode11.2)"
-      <<: *osx_base_job
+      <<: *osx_new_job
 
     - name: "Windows"
       <<: *win_base_job
