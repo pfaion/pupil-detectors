@@ -27,8 +27,16 @@ osx_base_job: &osx_base_job
   osx_image: xcode8.3
   language: sh
   before_install:
-    - brew install opencv@3
     - brew install ceres-solver
+    - wget https://github.com/opencv/opencv/archive/3.4.6.zip
+    - unzip 3.4.6.zip
+    - cd opencv-3.4.6
+    - mkdir -p build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video ..
+    - make -j8
+    - make install
+    - cd ../..
     - brew upgrade pyenv
     - pyenv install -s 3.6.8
     - pyenv install -s 3.7.4
@@ -50,7 +58,7 @@ win_base_job: &win_base_job
   before_install:
     - git clone https://github.com/Microsoft/vcpkg.git
     - cd vcpkg
-    - .\bootstrap-vcpkg.bat
+    - powershell .\bootstrap-vcpkg.bat
     - .\vcpkg install opencv3 ceres eigen
     - export -DCMAKE_TOOLCHAIN_FILE=`pwd`\scripts\buildsystems\vcpkg.cmake
 
