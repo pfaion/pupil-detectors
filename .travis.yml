@@ -24,7 +24,7 @@ env_py37: &env_py37
 
 osx_base_job: &osx_base_job
   os: osx
-  osx_image: xcode8.3
+  osx_image: xcode9.2
   language: sh
   before_install:
     - brew install -v ceres-solver
@@ -118,7 +118,7 @@ ubuntu_base_job: &ubuntu_base_job
 
 matrix:
   include:
-    - name: "OSX 10.12 (xcode8.3)"
+    - name: "OSX 10.12 (xcode9.2)"
       <<: *osx_base_job
 
     - name: "OSX 10.14 (xcode11.2)"
