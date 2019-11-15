@@ -65,11 +65,13 @@ osx_new_job: &osx_new_job
   install:
     - pyenv global 3.6.8
     - pip wheel --no-deps -w wheel_test .
+    - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
 
     - pyenv global 3.7.4
     - pip wheel --no-deps -w wheel_test .
+    - pip install tox
     - tox --installpkg wheel_test/*.whl -e py37
     - mv wheel_test/*.whl wheelhouse/
 
