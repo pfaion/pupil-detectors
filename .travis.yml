@@ -93,7 +93,7 @@ win_base_job: &win_base_job
     - mkdir -p build
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video ..
-    - make -j8
+    - cmake --build . --target INSTALL --config Release
     - find . -type f
     - cd ../..
     - rm -rf opencv.zip
