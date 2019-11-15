@@ -38,6 +38,7 @@ osx_base_job: &osx_base_job
     - make install
     - cd ../..
     - brew upgrade pyenv
+    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
     - pyenv install -s 3.6.8
     - pyenv install -s 3.7.4
   install:
@@ -58,6 +59,7 @@ osx_new_job: &osx_new_job
   before_install:
     - brew install ceres-solver opencv@3
     - brew upgrade pyenv
+    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
     - pyenv install -s 3.6.8
     - pyenv install -s 3.7.4
   install:
