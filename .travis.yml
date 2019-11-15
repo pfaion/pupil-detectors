@@ -27,7 +27,9 @@ osx_base_job: &osx_base_job
   osx_image: xcode9.2
   language: sh
   before_install:
-    - brew install -v ceres-solver
+    # install things that take longer than 10min with -v for travis to not stop!
+    - brew install -v gcc
+    - brew install ceres-solver
     - wget https://github.com/opencv/opencv/archive/3.4.6.zip
     - unzip 3.4.6.zip
     - cd opencv-3.4.6
@@ -42,13 +44,16 @@ osx_base_job: &osx_base_job
     - pyenv install -s 3.6.8
     - pyenv install -s 3.7.4
   install:
+    - mkdir -p wheelhouse
     - pyenv global 3.6.8
     - pip wheel --no-deps -w wheel_test .
+    - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
 
     - pyenv global 3.7.4
     - pip wheel --no-deps -w wheel_test .
+    - pip install tox
     - tox --installpkg wheel_test/*.whl -e py37
     - mv wheel_test/*.whl wheelhouse/
 
@@ -63,6 +68,7 @@ osx_new_job: &osx_new_job
     - pyenv install -s 3.6.8
     - pyenv install -s 3.7.4
   install:
+    - mkdir -p wheelhouse
     - pyenv global 3.6.8
     - pip wheel --no-deps -w wheel_test .
     - pip install tox
