@@ -48,14 +48,22 @@ win_base_job: &win_base_job
   os: windows
   language: sh
   before_install:
-    # vcredist2010 is required for loading the apriltags.dll when building with msvc.
-    # I don't know why exactly, but loading the DLL will fail otherwise on travis.
-    - choco install vcredist2010
-    - choco install python --version $PYTHON_VERSION
-    - python -m pip install -U pip
-  install:
-    - python -m pip install pep517 tox
-    - python -m pep517.build .
+    - git clone https://github.com/Microsoft/vcpkg.git
+    - cd vcpkg
+    - .\bootstrap-vcpkg.bat
+    - .\vcpkg install opencv3 ceres eigen
+    - export -DCMAKE_TOOLCHAIN_FILE=`pwd`\scripts\buildsystems\vcpkg.cmake
+
+
+    - choco install python --version 3.6.8
+    - pip wheel --no-deps -w wheel_test .
+    - tox --installpkg wheel_test/*.whl -e py36
+    - mv wheel_test/*.whl wheelhouse/
+
+    - choco install python --version 3.7.4
+    - pip wheel --no-deps -w wheel_test .
+    - tox --installpkg wheel_test/*.whl -e py37
+    - mv wheel_test/*.whl wheelhouse/
 
 ubuntu_base_job: &ubuntu_base_job
   os: linux
@@ -81,17 +89,8 @@ matrix:
     - name: "OSX 10.12 (xcode8.3)"
       <<: *osx_base_job
 
-    # - name: "Python 3.7.4 on OSX 10.12 (xcode8.3)"
-    #   <<: *osx_base_job
-    #   <<: *env_py37
-
-    # - name: "Python 3.6.8 on Windows"
-    #   <<: *win_base_job
-    #   <<: *env_py36
-    
-    # - name: "Python 3.7.4 on Windows"
-    #   <<: *win_base_job
-    #   <<: *env_py37
+    - name: "Windows"
+      <<: *win_base_job
 
     - name: "Ubuntu (manylinux)"
       <<: *ubuntu_base_job
