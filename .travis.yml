@@ -93,7 +93,7 @@ win_base_job: &win_base_job
     # Eigen3
     - wget -O eigen3.zip https://bitbucket.org/eigen/eigen/get/3.3.3.zip
     - unzip -q eigen3.zip
-    - mv eigen-eigen-* Eigen
+    - mv eigen-eigen-* eigen
 
     # Opencv
     - wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.6.zip
