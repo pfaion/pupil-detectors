@@ -89,22 +89,24 @@ win_base_job: &win_base_job
     - mkdir -p dependencies
     - cd dependencies
     - pwd
+
+    # Eigen3
     - wget -O eigen3.zip https://bitbucket.org/eigen/eigen/get/3.3.3.zip
     - unzip -q eigen3.zip
     - mv eigen-eigen-* Eigen
-    - rm -rf eigen3.zip
 
+    # Opencv
     - wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.6.zip
     - unzip -q opencv.zip
     - cd opencv-3.4.6
     - mkdir -p build
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=`pwd`/../../opencv -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video ..
-    - cmake --build . --target INSTALL --config Release -- -j8
+    - cmake --build . --target INSTALL --config Release
     - cd ../..
-    - rm -rf opencv.zip
-    - rm -rf opencv-3.4.6
     - find ./opencv -type f
+
+    # Ceres
 
 
 
