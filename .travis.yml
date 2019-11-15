@@ -59,7 +59,9 @@ win_base_job: &win_base_job
     - git clone https://github.com/Microsoft/vcpkg.git
     - cd vcpkg
     - powershell ./bootstrap-vcpkg.bat
-    - ./vcpkg install opencv3 ceres eigen3
+    - ./vcpkg install eigen3
+    - ./vcpkg install opencv3
+    - ./vcpkg install ceres
     - export -DCMAKE_TOOLCHAIN_FILE=`pwd`/scripts/buildsystems/vcpkg.cmake
 
 
