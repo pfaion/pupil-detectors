@@ -126,6 +126,7 @@ win_base_job: &win_base_job
     - EIGEN_DIR=`pwd`/eigen
     - OPENCV_DIR=`pwd`/opencv
     - CERES_DIR=`pwd`/ceres-solver
+    - cd ..
 
   install:
     - choco install python --version 3.6.8
