@@ -95,24 +95,17 @@ win_base_job: &win_base_job
     - mv eigen-eigen-* eigen
 
     # Opencv
-    - wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.6.zip
+    - wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.5.zip
     - unzip -q opencv.zip
-    - cd opencv-3.4.6
+    - cd opencv-3.4.5
     - mkdir -p build
     - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../../opencv -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video ..
+    - >
+      cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video -DCMAKE_INSTALL_PREFIX=../../opencv -G"Visual Studio 15 2017 Win64"
     - cmake --build . --target INSTALL --config Release
     - cd ../..
 
-    # GLOG
-    - wget -O glog.zip https://github.com/google/glog/archive/v0.4.0.zip
-    - unzip -q glog.zip
-    - cd glog-0.4.0
-    - cmake . -DCMAKE_INSTALL_PREFIX=../glog
-    - cmake --build . --config Release --target INSTALL
-    - cd ..
-
-    # Ceres
+    # Ceres with Miniglog
     - wget -O ceres-solver.tar.gz http://ceres-solver.org/ceres-solver-1.14.0.tar.gz
     - tar -xzf ceres-solver.tar.gz
     - cd ceres-solver-1.14.0
@@ -120,21 +113,30 @@ win_base_job: &win_base_job
       cmake .
       -DCMAKE_INSTALL_PREFIX=../ceres-solver
       -DEIGEN_INCLUDE_DIR_HINTS=../eigen
-      -DGLOG_INCLUDE_DIR_HINTS=../glog/include
-      -DGLOG_LIBRARY_DIR_HINTS=../glog/lib
+      -DMINIGLOG=ON
+      -DCERES_USE_OPENMP=ON
+      -DBUILD_TESTING=OFF
+      -DBUILD_EXAMPLES=OFF
+      -G"Visual Studio 15 2017 Win64"
     - cmake --build . --config Release --target ceres
     - cmake --install .
+    - cd ..
 
+    # Set build parameters
+    - EIGEN_DIR=`pwd`/eigen
+    - OPENCV_DIR=`pwd`/opencv
+    - CERES_DIR=`pwd`/ceres-solver
 
-    # - choco install python --version 3.6.8
-    # - pip wheel --no-deps -w wheel_test .
-    # - tox --installpkg wheel_test/*.whl -e py36
-    # - mv wheel_test/*.whl wheelhouse/
+  install:
+    - choco install python --version 3.6.8
+    - pip wheel --no-deps -w wheel_test .
+    - tox --installpkg wheel_test/*.whl -e py36
+    - mv wheel_test/*.whl wheelhouse/
 
-    # - choco install python --version 3.7.4
-    # - pip wheel --no-deps -w wheel_test .
-    # - tox --installpkg wheel_test/*.whl -e py37
-    # - mv wheel_test/*.whl wheelhouse/
+    - choco install python --version 3.7.4
+    - pip wheel --no-deps -w wheel_test .
+    - tox --installpkg wheel_test/*.whl -e py37
+    - mv wheel_test/*.whl wheelhouse/
 
 ubuntu_base_job: &ubuntu_base_job
   os: linux

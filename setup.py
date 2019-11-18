@@ -44,29 +44,49 @@ include_dirs += [
 
 # Platform-specific setup
 if platform.system() == "Windows":
-    OPENCV = "C:\\work\\opencv\\build"
-    include_dirs.append(f"{OPENCV}\\include")
-    library_dirs.append(f"{OPENCV}\\x64\\vc14\\lib")
-    libraries.append("opencv_world345")
+    # NOTE: In previous versions, the dependencies for Windows had to be installed into
+    # C:\work. Now we allow for dynamic library location via environment variables:
+    # - OPENCV_DIR
+    # - EIGEN_DIR
+    # - CERES_DIR
+    # The legacy functionality is still included though for backwards compatibility.
 
-    EIGEN = "C:\\work\\ceres-windows\\Eigen"
-    include_dirs.append(f"{EIGEN}")
+    if "OPENCV_DIR" in os.environ:
+        OPENCV_DIR = os.environ["OPENCV_DIR"]
+        include_dirs.append(f"{OPENCV_DIR}\\include")
+        library_dirs.append(f"{OPENCV_DIR}\\x64\\vc15\\lib")
+        libraries.append("opencv_world345")
+    else:
+        # legacy fallback for old manual windows setup
+        OPENCV = "C:\\work\\opencv\\build"
+        include_dirs.append(f"{OPENCV}\\include")
+        library_dirs.append(f"{OPENCV}\\x64\\vc14\\lib")
+        libraries.append("opencv_world345")
 
-    include_dirs.append(rf"C:\Users\PFA\Downloads\ceres\ceres-solver\include")
-    library_dirs.append(rf"C:\Users\PFA\Downloads\ceres\ceres-solver\lib")
-    include_dirs.append(rf"C:\Users\PFA\Downloads\ceres\glog\include")
-    library_dirs.append(rf"C:\Users\PFA\Downloads\ceres\glog\lib")
-    libraries.append("ceres")
-    libraries.append("glog")
+    if "EIGEN_DIR" in os.environ:
+        EIGEN_DIR = os.environ["EIGEN_DIR"]
+        include_dirs.append(EIGEN_DIR)
+    else:
+        # legacy fallback for old manual windows setup
+        EIGEN = "C:\\work\\ceres-windows\\Eigen"
+        include_dirs.append(f"{EIGEN}")
 
-    # CERES = "C:\\work\\ceres-windows"
-    # # NOTE: ceres for windows needs to link against glog
-    # include_dirs.append(f"{CERES}")
-    # include_dirs.append(f"{CERES}\\ceres-solver\\include")
-    # include_dirs.append(f"{CERES}\\glog\\src\\windows")
-    # library_dirs.append(f"{CERES}\\x64\\Release")
-    # libraries.append("ceres_static")
-    # libraries.append("libglog_static")
+    if "CERES_DIR" in os.environ:
+        CERES_DIR = os.environ["CERES_DIR"]
+        include_dirs.append(f"{CERES_DIR}\\include")
+        include_dirs.append(f"{CERES_DIR}\\include\\ceres\\internal\\miniglog")
+        library_dirs.append(f"{CERES_DIR}\\lib")
+        libraries.append("ceres")
+    else:
+        # legacy fallback for old manual windows setup
+        CERES = "C:\\work\\ceres-windows"
+        # NOTE: ceres for windows needs to link against glog
+        # include_dirs.append(f"{CERES}")
+        include_dirs.append(f"{CERES}\\ceres-solver\\include")
+        include_dirs.append(f"{CERES}\\glog\\src\\windows")
+        library_dirs.append(f"{CERES}\\x64\\Release")
+        libraries.append("ceres_static")
+        libraries.append("libglog_static")
 
 else:
     # Opencv
@@ -133,7 +153,6 @@ if platform.system() == "Windows":
         # and fix it correctly at some point.
         "-D_ENABLE_EXTENDED_ALIGNED_STORAGE",
         "-DCMAKE_GENERATOR_PLATFORM=x64",
-        "-T host=x64",
     ]
 else:
     extra_compile_args += [
