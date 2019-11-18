@@ -81,6 +81,30 @@ osx_new_job: &osx_new_job
     - tox --installpkg wheel_test/*.whl -e py37
     - mv wheel_test/*.whl wheelhouse/
 
+osx_13: &osx_13
+  os: osx
+  osx_image: xcode10.1
+  language: sh
+  before_install:
+    - brew install ceres-solver opencv@3
+    - brew upgrade pyenv
+    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+    - pyenv install -s 3.6.8
+    - pyenv install -s 3.7.4
+  install:
+    - mkdir -p wheelhouse
+    - pyenv global 3.6.8
+    - pip wheel --no-deps -w wheel_test .
+    - pip install tox
+    - tox --installpkg wheel_test/*.whl -e py36
+    - mv wheel_test/*.whl wheelhouse/
+
+    - pyenv global 3.7.4
+    - pip wheel --no-deps -w wheel_test .
+    - pip install tox
+    - tox --installpkg wheel_test/*.whl -e py37
+    - mv wheel_test/*.whl wheelhouse/
+
     
 win_base_job: &win_base_job
   os: windows
@@ -160,11 +184,14 @@ ubuntu_base_job: &ubuntu_base_job
 
 matrix:
   include:
-    - name: "OSX 10.12 (xcode9.2)"
-      <<: *osx_base_job
+    # - name: "OSX 10.12 (xcode9.2)"
+    #   <<: *osx_base_job
 
-    - name: "OSX 10.14 (xcode11.2)"
-      <<: *osx_new_job
+    # - name: "OSX 10.14 (xcode11.2)"
+    #   <<: *osx_new_job
+
+    - name: "OSX 10.13 (xcode10.1)"
+      <<: *osx_13
 
     - name: "Windows"
       <<: *win_base_job
