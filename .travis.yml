@@ -125,7 +125,7 @@ win_base_job: &win_base_job
     - mkdir -p build
     - cd build
     - >
-      cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_LIST=world -DCMAKE_INSTALL_PREFIX=../../opencv -G"Visual Studio 15 2017 Win64"
+      cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_LIST=world,core,highgui,videoio,imgcodecs,imgproc,video -DCMAKE_INSTALL_PREFIX=../../opencv -G"Visual Studio 15 2017 Win64"
     - cmake --build . --target INSTALL --config Release
     - cd ../..
 
