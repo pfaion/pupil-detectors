@@ -111,8 +111,13 @@ stages:
 
 win_dependency_job: &win_dependency_job
   os: windows
-  langauge: sh
+  language: sh
   stage: setup
+  workspaces:
+    create:
+      name: dependencies
+      paths:
+        - dependencies
   cache:
     directories:
       - dependencies
@@ -126,11 +131,9 @@ win_base_job: &win_base_job
   os: windows
   language: sh
   stage: build
-  cache:
-    directories:
-      - dependencies
+  workspaces:
+    use: dependencies
   before_install:
-    - ls dependencies
     # Set build parameters
     - export EIGEN_DIR=`pwd`/dependencies/eigen
     - export OPENCV_DIR=`pwd`/dependencies/opencv
