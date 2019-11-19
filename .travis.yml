@@ -215,7 +215,7 @@ matrix:
       <<: *win_dependency_job
     - name: "Build Windows wheels (rebuild dependencies)"
       <<: *win_job_rebuild
-      
+
     - name: "Build Windows wheels (cached dependencies)"
       <<: *win_job_cached
 
@@ -236,7 +236,8 @@ script:
 
 deploy_template: &deploy_template
   skip_cleanup: true
-  all_branches: true
+  on:
+    all_branches: true
 
 
 deploy:
