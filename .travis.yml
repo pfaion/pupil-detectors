@@ -105,17 +105,33 @@ env_py37: &env_py37
 #     - tox --installpkg wheel_test/*.whl -e py37
 #     - mv wheel_test/*.whl wheelhouse/
 
+stages:
+  - setup
+  - build
+
+win_dependency_job: &win_dependency_job
+  os: windows
+  langauge: sh
+  stage: setup
+  workspaces:
+    create:
+      name: dependencies
+      paths:
+        - dependencies
+  cache:
+    directories:
+      - dependencies
+  script:
+    - ls dependencies
+    - true && [ -d "dependencies/ceres-solver" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
+  
+
     
 win_base_job: &win_base_job
   os: windows
   language: sh
-  cache:
-    directories:
-      - dependencies
+  stage: build
   before_install:
-    - ls dependencies
-    - true && [ -d "dependencies/ceres-solver" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
-
     # Set build parameters
     - export EIGEN_DIR=`pwd`/dependencies/eigen
     - export OPENCV_DIR=`pwd`/dependencies/opencv
@@ -169,8 +185,10 @@ matrix:
 
     # - name: "OSX 10.13 (xcode10.1)"
     #   <<: *osx_13
+    - name: "Setup Windows dependencies"
+      <<: *win_dependency_job
 
-    - name: "Windows"
+    - name: "Build Windows wheels"
       <<: *win_base_job
 
     # - name: "Ubuntu (manylinux)"
