@@ -90,6 +90,7 @@ win_base_job: &win_base_job
     - python -c "from ctypes.util import find_library; print(find_library('kernel32'))"
     - python -c "from ctypes.util import find_library; print(find_library('python36'))"
     - pip install .
+    - ls /c/Python36/lib/site-packages/pupil-detectors/detector_2d
     - pip install pytest
     - python -vvm pytest tests
     - pip install tox
