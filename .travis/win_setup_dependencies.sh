@@ -5,29 +5,34 @@ set -ev
 mkdir -p dependencies
 cd dependencies
 
-# Eigen3
-wget -O eigen3.zip https://bitbucket.org/eigen/eigen/get/3.3.3.zip
-unzip -q eigen3.zip
-mv eigen-eigen-* eigen
-rm -rf eigen3.zip
-
 # Opencv
-wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.5.zip
-unzip -q opencv.zip
-cd opencv-3.4.5
-mkdir -p build
-cd build
-cmake ..\
-    -DCMAKE_BUILD_TYPE=Release\
-    -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video\
-    -DBUILD_opencv_world=ON\
-    -DCMAKE_INSTALL_PREFIX=../../opencv\
-    -G"Visual Studio 15 2017 Win64"
+# wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.5.zip
+# unzip -q opencv.zip
+# cd opencv-3.4.5
+# mkdir -p build
+# cd build
+# cmake ..\
+#     -DCMAKE_BUILD_TYPE=Release\
+#     -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video\
+#     -DBUILD_opencv_world=ON\
+#     -DCMAKE_INSTALL_PREFIX=../../opencv\
+#     -G"Visual Studio 15 2017 Win64"
+
+wget https://sourceforge.net/projects/opencvlibrary/files/3.4.5/opencv-3.4.5-vc14_vc15.exe
+./opencv-3.4.5-vc14_vc15.exe -oopencv -y
+ls
+ls opencv
 
 cmake --build . --target INSTALL --config Release
 cd ../..
 rm -rf opencv.zip
 rm -rf opencv-3.4.5
+
+# Eigen3
+wget -O eigen3.zip https://bitbucket.org/eigen/eigen/get/3.3.3.zip
+unzip -q eigen3.zip
+mv eigen-eigen-* eigen
+rm -rf eigen3.zip
 
 # Ceres with Miniglog
 wget -O ceres-solver.tar.gz http://ceres-solver.org/ceres-solver-1.14.0.tar.gz
