@@ -117,10 +117,9 @@ win_base_job: &win_base_job
     - true && [ -d "dependencies/ceres-solver" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
 
     # Set build parameters
-    - export EIGEN_DIR=`pwd`/eigen
-    - export OPENCV_DIR=`pwd`/opencv
-    - export CERES_DIR=`pwd`/ceres-solver
-    - cd ..
+    - export EIGEN_DIR=`pwd`/dependencies/eigen
+    - export OPENCV_DIR=`pwd`/dependencies/opencv
+    - export CERES_DIR=`pwd`/dependencies/ceres-solver
 
   install:
     - choco install python --version 3.6.8
