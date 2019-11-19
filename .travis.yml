@@ -114,7 +114,7 @@ win_base_job: &win_base_job
       - dependencies
   before_install:
     - ls dependencies
-    - true && [ -d "dependencies" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
+    - true && [ -d "dependencies/ceres-solver" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
 
     # Set build parameters
     - export EIGEN_DIR=`pwd`/eigen
@@ -129,7 +129,7 @@ win_base_job: &win_base_job
     - pip install numpy opencv-python
     - pip install wheel_test/*.whl
     - pip install pytest
-    - pytest
+    - pytest tests
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
