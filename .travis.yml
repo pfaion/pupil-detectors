@@ -47,6 +47,7 @@ osx_base_job: &osx_base_job
     - mkdir -p wheelhouse
     - pyenv global 3.6.8
     - pip wheel --no-deps -w wheel_test .
+    - pip install numpy opencv-python
     - pip install wheel_test/*.whl
     - pip install pytest
     - pytest
