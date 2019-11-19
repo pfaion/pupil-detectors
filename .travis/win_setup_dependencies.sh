@@ -1,57 +1,48 @@
 #!/bin/bash
 
+set -e -x
+
+mkdir -p dependencies
+cd dependencies
+
+# Eigen3
 wget -O eigen3.zip https://bitbucket.org/eigen/eigen/get/3.3.3.zip
 unzip -q eigen3.zip
 mv eigen-eigen-* eigen
+rm -rf eigen3.zip
 
-# wget -O gflags.zip https://github.com/gflags/gflags/archive/v2.2.2.zip
-# unzip -q gflags.zip
-# cd gflags-2.2.2
-# cmake . \
-#     -DCMAKE_INSTALL_PREFIX=../gflags \
-#     -DCMAKE_GENERATOR_PLATFORM=x64 \
-#     -T host=x64
-# cmake --build . --config Release
-# cmake --install .
-# cd ..
+# Opencv
+wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.5.zip
+unzip -q opencv.zip
+cd opencv-3.4.5
+mkdir -p build
+cd build
+cmake ..\
+    -DCMAKE_BUILD_TYPE=Release\
+    -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video\
+    -DCMAKE_INSTALL_PREFIX=../../opencv\
+    -G"Visual Studio 15 2017 Win64"
 
-# wget -O glog.zip https://github.com/google/glog/archive/v0.4.0.zip
-# unzip -q glog.zip
-# cd glog-0.4.0
-# cmake . \
-#     -DCMAKE_INSTALL_PREFIX=../glog \
-#     -DBUILD_TESTING=OFF \
-#     -G"Visual Studio 15 2017 Win64"
-# cmake --build . --config Release --target INSTALL
-# cd ..
+cmake --build . --target INSTALL --config Release
+cd ../..
+rm -rf opencv.zip
 
-# wget -O ceres-solver.tar.gz http://ceres-solver.org/ceres-solver-1.14.0.tar.gz
-# tar -xzf ceres-solver.tar.gz
-# cd ceres-solver-1.14.0
-# cmake . \
-#     -DCMAKE_INSTALL_PREFIX=../ceres-solver \
-#     -DEIGEN_INCLUDE_DIR_HINTS=../eigen \
-#     -DGLOG_INCLUDE_DIR_HINTS=../glog/include \
-#     -DGLOG_LIBRARY_DIR_HINTS=../glog/lib \
-#     -DCERES_USE_OPENMP=ON \
-#     -DBUILD_TESTING=OFF \
-#     -DBUILD_EXAMPLES=OFF \
-#     -G"Visual Studio 15 2017 Win64"
-# cmake --build . --config Release --target ceres
-# cmake --install .
-
-
+# Ceres with Miniglog
 wget -O ceres-solver.tar.gz http://ceres-solver.org/ceres-solver-1.14.0.tar.gz
 tar -xzf ceres-solver.tar.gz
 cd ceres-solver-1.14.0
-cmake . \
-    -DCMAKE_INSTALL_PREFIX=../ceres-solver \
-    -DEIGEN_INCLUDE_DIR_HINTS=../eigen \
-    -DMINIGLOG=ON \
-    -DCERES_USE_OPENMP=ON \
-    -DBUILD_TESTING=OFF \
-    -DBUILD_EXAMPLES=OFF \
+cmake .\
+    -DCMAKE_INSTALL_PREFIX=../ceres-solver\
+    -DEIGEN_INCLUDE_DIR_HINTS=../eigen\
+    -DMINIGLOG=ON\
+    -DCERES_USE_OPENMP=ON\
+    -DBUILD_TESTING=OFF\
+    -DBUILD_EXAMPLES=OFF\
+    -DSCHUR_SPECIALIZATIONS=OFF\
     -G"Visual Studio 15 2017 Win64"
 cmake --build . --config Release --target ceres
 cmake --install .
+cd ..
+rm -rf ceres-solver.tar.gz
 
+cd ..
