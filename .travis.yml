@@ -74,6 +74,7 @@ win_base_job: &win_base_job
     - export CERES_DIR=`pwd`/dependencies/ceres-solver
 
   install:
+    - choco install vcredist140
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - python -m pip install -U pip
