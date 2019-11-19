@@ -133,9 +133,9 @@ win_base_job: &win_base_job
   # stage: build
   # workspaces:
   #   use: dependencies
-  cache:
-    directories:
-      - dependencies
+  # cache:
+  #   directories:
+  #     - dependencies
   before_install:
     # Set build parameters
     - export EIGEN_DIR=`pwd`/dependencies/eigen
@@ -148,7 +148,7 @@ win_base_job: &win_base_job
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - python -m pip install -U pip
     - pip wheel --no-deps -w wheel_test .
-  before_deploy:
+  before_script:
     - pip install numpy opencv-python
     - pip install wheel_test/*.whl
     - pip install pytest
@@ -163,6 +163,17 @@ win_base_job: &win_base_job
     # - pip install tox
     # - tox --installpkg wheel_test/*.whl -e py37
     # - mv wheel_test/*.whl wheelhouse/
+
+win_job_cached: &win_job_cached
+  <<: *win_base_job
+  if: commit_message !~ /\@TRAVIS: rebuild-dependencies/
+  cache:
+    directories:
+      - dependencies
+
+
+
+
 
 # ubuntu_base_job: &ubuntu_base_job
 #   os: linux
@@ -193,11 +204,11 @@ matrix:
 
     # - name: "OSX 10.13 (xcode10.1)"
     #   <<: *osx_13
-    - name: "Setup Windows dependencies"
-      <<: *win_dependency_job
+    # - name: "Setup Windows dependencies"
+    #   <<: *win_dependency_job
 
     - name: "Build Windows wheels"
-      <<: *win_base_job
+      <<: *win_job_cached
 
     # - name: "Ubuntu (manylinux)"
     #   <<: *ubuntu_base_job
