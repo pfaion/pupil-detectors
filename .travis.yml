@@ -166,7 +166,7 @@ win_base_job: &win_base_job
 
 win_job_cached: &win_job_cached
   <<: *win_base_job
-  if: commit_message !~ /\@TRAVIS: rebuild-dependencies/
+  if: "commit_message !~ /@TRAVIS: rebuild-dependencies/"
   cache:
     directories:
       - dependencies
