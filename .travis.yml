@@ -22,92 +22,88 @@ env_py37: &env_py37
 # OS JOB TEMPLATES
 ################################################################################
 
-osx_base_job: &osx_base_job
-  os: osx
-  osx_image: xcode9.2
-  language: sh
-  before_install:
-    # install things that take longer than 10min with -v for travis to not stop!
-    - brew install -v gcc
-    - brew install ceres-solver
-    - wget https://github.com/opencv/opencv/archive/3.4.6.zip
-    - unzip 3.4.6.zip
-    - cd opencv-3.4.6
-    - mkdir -p build
-    - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video ..
-    - make -j8
-    - make install
-    - cd ../..
-    - brew upgrade pyenv
-    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-    - pyenv install -s 3.6.8
-    - pyenv install -s 3.7.4
-  install:
-    - mkdir -p wheelhouse
-    - pyenv global 3.6.8
-    - pip wheel --no-deps -w wheel_test .
-    - pip install numpy opencv-python
-    - pip install wheel_test/*.whl
-    - pip install pytest
-    - pytest
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py36
-    - mv wheel_test/*.whl wheelhouse/
+# osx_base_job: &osx_base_job
+#   os: osx
+#   osx_image: xcode9.2
+#   language: sh
+#   before_install:
+#     # install things that take longer than 10min with -v for travis to not stop!
+#     - brew install -v gcc
+#     - brew install ceres-solver
+#     - wget https://github.com/opencv/opencv/archive/3.4.6.zip
+#     - unzip 3.4.6.zip
+#     - cd opencv-3.4.6
+#     - mkdir -p build
+#     - cd build
+#     - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video ..
+#     - make -j8
+#     - make install
+#     - cd ../..
+#     - brew upgrade pyenv
+#     - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+#     - pyenv install -s 3.6.8
+#     - pyenv install -s 3.7.4
+#   install:
+#     - mkdir -p wheelhouse
+#     - pyenv global 3.6.8
+#     - pip wheel --no-deps -w wheel_test .
+#     - pip install tox
+#     - tox --installpkg wheel_test/*.whl -e py36
+#     - mv wheel_test/*.whl wheelhouse/
 
-    - pyenv global 3.7.4
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py37
-    - mv wheel_test/*.whl wheelhouse/
+#     - pyenv global 3.7.4
+#     - pip wheel --no-deps -w wheel_test .
+#     - pip install tox
+#     - tox --installpkg wheel_test/*.whl -e py37
+#     - mv wheel_test/*.whl wheelhouse/
 
-osx_new_job: &osx_new_job
-  os: osx
-  osx_image: xcode11.2
-  language: sh
-  before_install:
-    - brew install ceres-solver opencv@3
-    - brew upgrade pyenv
-    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-    - pyenv install -s 3.6.8
-    - pyenv install -s 3.7.4
-  install:
-    - mkdir -p wheelhouse
-    - pyenv global 3.6.8
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py36
-    - mv wheel_test/*.whl wheelhouse/
+# osx_new_job: &osx_new_job
+#   os: osx
+#   osx_image: xcode11.2
+#   language: sh
+#   before_install:
+#     - brew install ceres-solver opencv@3
+#     - brew upgrade pyenv
+#     - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+#     - pyenv install -s 3.6.8
+#     - pyenv install -s 3.7.4
+#   install:
+#     - mkdir -p wheelhouse
+#     - pyenv global 3.6.8
+#     - pip wheel --no-deps -w wheel_test .
+#     - pip install tox
+#     - tox --installpkg wheel_test/*.whl -e py36
+#     - mv wheel_test/*.whl wheelhouse/
 
-    - pyenv global 3.7.4
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py37
-    - mv wheel_test/*.whl wheelhouse/
+#     - pyenv global 3.7.4
+#     - pip wheel --no-deps -w wheel_test .
+#     - pip install tox
+#     - tox --installpkg wheel_test/*.whl -e py37
+#     - mv wheel_test/*.whl wheelhouse/
 
-osx_13: &osx_13
-  os: osx
-  osx_image: xcode10.1
-  language: sh
-  before_install:
-    - brew install ceres-solver opencv@3
-    - brew upgrade pyenv
-    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-    - pyenv install -s 3.6.8
-    - pyenv install -s 3.7.4
-  install:
-    - mkdir -p wheelhouse
-    - pyenv global 3.6.8
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py36
-    - mv wheel_test/*.whl wheelhouse/
+# osx_13: &osx_13
+#   os: osx
+#   osx_image: xcode10.1
+#   language: sh
+#   before_install:
+#     - brew install ceres-solver opencv@3
+#     - brew upgrade pyenv
+#     - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+#     - pyenv install -s 3.6.8
+#     - pyenv install -s 3.7.4
+#   install:
+#     - mkdir -p wheelhouse
+#     - pyenv global 3.6.8
+#     - pip wheel --no-deps -w wheel_test .
+#     - pip install tox
+#     - tox --installpkg wheel_test/*.whl -e py36
+#     - mv wheel_test/*.whl wheelhouse/
 
-    - pyenv global 3.7.4
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py37
-    - mv wheel_test/*.whl wheelhouse/
+#     - pyenv global 3.7.4
+#     - pip wheel --no-deps -w wheel_test .
+#     - pip install tox
+#     - tox --installpkg wheel_test/*.whl -e py37
+#     - mv wheel_test/*.whl wheelhouse/
 
     
 win_base_job: &win_base_job
@@ -161,6 +157,10 @@ win_base_job: &win_base_job
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - pip wheel --no-deps -w wheel_test .
+    - pip install numpy opencv-python
+    - pip install wheel_test/*.whl
+    - pip install pytest
+    - pytest
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
@@ -172,19 +172,19 @@ win_base_job: &win_base_job
     - tox --installpkg wheel_test/*.whl -e py37
     - mv wheel_test/*.whl wheelhouse/
 
-ubuntu_base_job: &ubuntu_base_job
-  os: linux
-  language: sh
-  services: docker
-  before_install:
-    - docker pull pupillabs/pupil-detectors:linux-latest
-  install:
-    - chmod +x ./.travis/linux_build_wheels.sh
-    - >
-      docker run --rm
-      -v `pwd`:/io
-      pupillabs/pupil-detectors:linux-latest
-      /io/.travis/linux_build_wheels.sh
+# ubuntu_base_job: &ubuntu_base_job
+#   os: linux
+#   language: sh
+#   services: docker
+#   before_install:
+#     - docker pull pupillabs/pupil-detectors:linux-latest
+#   install:
+#     - chmod +x ./.travis/linux_build_wheels.sh
+#     - >
+#       docker run --rm
+#       -v `pwd`:/io
+#       pupillabs/pupil-detectors:linux-latest
+#       /io/.travis/linux_build_wheels.sh
   
 
 ################################################################################
@@ -199,8 +199,8 @@ matrix:
     # - name: "OSX 10.14 (xcode11.2)"
     #   <<: *osx_new_job
 
-    - name: "OSX 10.13 (xcode10.1)"
-      <<: *osx_13
+    # - name: "OSX 10.13 (xcode10.1)"
+    #   <<: *osx_13
 
     - name: "Windows"
       <<: *win_base_job
