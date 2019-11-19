@@ -156,16 +156,15 @@ win_base_job: &win_base_job
   install:
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
-    - pip install numpy cython
-    - python setup.py build_ext
-    - rm -rf build
     - pip wheel --no-deps -w wheel_test .
+    - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
 
     - choco install python --version 3.7.4
     - PATH=/c/Python37:/c/Python37/Scripts:$PATH
     - pip wheel --no-deps -w wheel_test .
+    - pip install tox
     - tox --installpkg wheel_test/*.whl -e py37
     - mv wheel_test/*.whl wheelhouse/
 
