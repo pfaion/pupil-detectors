@@ -95,6 +95,7 @@ win_base_job: &win_base_job
     - wget http://www.dependencywalker.com/depends22_x86.zip
     - unzip depends22_x86.zip
     - powershell "./depends.exe /c /ot:out.txt /c/Python36/Lib/site-packages/pupil-pupil_detectors/detector_2d/detector_2d.cp36-win_amd64.pyd"
+    - python -c "import time; time.sleep(10)"
     - cat out.txt
 
     - pip install pytest
