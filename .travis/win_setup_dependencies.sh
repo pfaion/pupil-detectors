@@ -27,6 +27,7 @@ cmake ..\
 cmake --build . --target INSTALL --config Release
 cd ../..
 rm -rf opencv.zip
+rm -rf opencv-3.4.5
 
 # Ceres with Miniglog
 wget -O ceres-solver.tar.gz http://ceres-solver.org/ceres-solver-1.14.0.tar.gz
@@ -45,5 +46,6 @@ cmake --build . --config Release --target ceres
 cmake --install .
 cd ..
 rm -rf ceres-solver.tar.gz
+rm -rf ceres-solver-1.14.0
 
 cd ..

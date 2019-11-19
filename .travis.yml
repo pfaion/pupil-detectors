@@ -74,15 +74,21 @@ win_base_job: &win_base_job
     - export CERES_DIR=`pwd`/dependencies/ceres-solver
 
   install:
-    - choco install vcredist140
+    - choco install vcredist-all vcredist140 vcredist2010
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - python -m pip install -U pip
-    - pip wheel --no-deps -w wheel_test .
+    # - pip wheel --no-deps -w wheel_test .
 
 
   before_script:
+    - python -c "from ctypes.util import find_library; print(find_library('opencv_world345'))"
     - export PATH=`pwd`/dependencies/opencv/x64/vc15/bin:$PATH
+    - python -c "from ctypes.util import find_library; print(find_library('opencv_world345'))"
+    - python -c "from ctypes.util import find_library; print(find_library('vcruntime140'))"
+    - python -c "from ctypes.util import find_library; print(find_library('msvcp140'))"
+    - python -c "from ctypes.util import find_library; print(find_library('kernel32'))"
+    - python -c "from ctypes.util import find_library; print(find_library('python36'))"
     - pip install .
     - pip install pytest
     - pytest tests
