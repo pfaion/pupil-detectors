@@ -140,13 +140,15 @@ win_base_job: &win_base_job
     - export CERES_DIR=`pwd`/dependencies/ceres-solver
 
   install:
+    - choco install vcredist2010
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - pip wheel --no-deps -w wheel_test .
-    # - pip install numpy opencv-python
-    # - pip install wheel_test/*.whl
-    # - pip install pytest
-    # - pytest tests
+  before_deploy:
+    - pip install numpy opencv-python
+    - pip install wheel_test/*.whl
+    - pip install pytest
+    - pytest tests
     # - pip install tox
     # - tox --installpkg wheel_test/*.whl -e py36
     # - mv wheel_test/*.whl wheelhouse/
@@ -209,9 +211,6 @@ script:
 #   - tox --installpkg ./dist/pupil_apriltags*.whl
 
 deploy_template: &deploy_template
-  on:
-    tags: true
-    branch: master
   skip_cleanup: true
 
 deploy:
