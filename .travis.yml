@@ -47,6 +47,9 @@ osx_base_job: &osx_base_job
     - mkdir -p wheelhouse
     - pyenv global 3.6.8
     - pip wheel --no-deps -w wheel_test .
+    - pip install wheel_test/*.whl
+    - pip install pytest
+    - pytest
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
