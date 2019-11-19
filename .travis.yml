@@ -90,7 +90,13 @@ win_base_job: &win_base_job
     - python -c "from ctypes.util import find_library; print(find_library('kernel32'))"
     - python -c "from ctypes.util import find_library; print(find_library('python36'))"
     - pip install .
-    - ls /c/Python36/lib/site-packages/pupil-detectors/detector_2d
+    - ls /c/Python36/Lib/site-packages/pupil-detectors/detector_2d
+
+    - wget http://www.dependencywalker.com/depends22_x86.zip
+    - unzip depends22_x86.zip
+    - powershell "./depends.exe /c /ot:out.txt /c/Python36/Lib/site-packages/pupil-detectors/detector_2d/detector_2d.cp36-win_amd64.pyd"
+    - cat out.txt
+
     - pip install pytest
     - python -vvm pytest tests
     - pip install tox
