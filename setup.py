@@ -61,7 +61,12 @@ if platform.system() == "Windows":
         OPENCV = "C:\\work\\opencv\\build"
         include_dirs.append(f"{OPENCV}\\include")
         library_dirs.append(f"{OPENCV}\\x64\\vc14\\lib")
-        libraries.append("opencv_world345")
+        libraries.append("opencv_core345")
+        libraries.append("opencv_highgui345")
+        libraries.append("opencv_videoio345")
+        libraries.append("opencv_imgcodecs345")
+        libraries.append("opencv_imgproc345")
+        libraries.append("opencv_video345")
 
     if "EIGEN_DIR" in os.environ:
         EIGEN_DIR = os.environ["EIGEN_DIR"]

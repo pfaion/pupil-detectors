@@ -125,7 +125,7 @@ win_base_job: &win_base_job
     - mkdir -p build
     - cd build
     - >
-      cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_LIST=world,core,highgui,videoio,imgcodecs,imgproc,video -DCMAKE_INSTALL_PREFIX=../../opencv -G"Visual Studio 15 2017 Win64"
+      cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video -DCMAKE_INSTALL_PREFIX=../../opencv -G"Visual Studio 15 2017 Win64"
     - cmake --build . --target INSTALL --config Release
     - cd ../..
 
@@ -148,14 +148,16 @@ win_base_job: &win_base_job
     - cd ..
 
     # Set build parameters
-    - EIGEN_DIR=`pwd`/eigen
-    - OPENCV_DIR=`pwd`/opencv
-    - CERES_DIR=`pwd`/ceres-solver
+    - export EIGEN_DIR=`pwd`/eigen
+    - export OPENCV_DIR=`pwd`/opencv
+    - export CERES_DIR=`pwd`/ceres-solver
     - cd ..
 
   install:
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+    - python setup.py build_ext
+    - rm -rf build
     - pip wheel --no-deps -w wheel_test .
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
