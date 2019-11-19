@@ -156,6 +156,7 @@ win_base_job: &win_base_job
   install:
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+    - pip install numpy cython
     - python setup.py build_ext
     - rm -rf build
     - pip wheel --no-deps -w wheel_test .
