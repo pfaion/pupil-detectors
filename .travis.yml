@@ -91,7 +91,7 @@ win_base_job: &win_base_job
     - python -c "from ctypes.util import find_library; print(find_library('python36'))"
     - pip install .
     - pip install pytest
-    - python -vm pytest tests
+    - python -vvm pytest tests
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
