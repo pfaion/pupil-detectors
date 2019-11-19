@@ -143,20 +143,20 @@ win_base_job: &win_base_job
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - pip wheel --no-deps -w wheel_test .
-    - pip install numpy opencv-python
-    - pip install wheel_test/*.whl
-    - pip install pytest
-    - pytest tests
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py36
-    - mv wheel_test/*.whl wheelhouse/
+    # - pip install numpy opencv-python
+    # - pip install wheel_test/*.whl
+    # - pip install pytest
+    # - pytest tests
+    # - pip install tox
+    # - tox --installpkg wheel_test/*.whl -e py36
+    # - mv wheel_test/*.whl wheelhouse/
 
-    - choco install python --version 3.7.4
-    - PATH=/c/Python37:/c/Python37/Scripts:$PATH
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py37
-    - mv wheel_test/*.whl wheelhouse/
+    # - choco install python --version 3.7.4
+    # - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+    # - pip wheel --no-deps -w wheel_test .
+    # - pip install tox
+    # - tox --installpkg wheel_test/*.whl -e py37
+    # - mv wheel_test/*.whl wheelhouse/
 
 # ubuntu_base_job: &ubuntu_base_job
 #   os: linux
@@ -203,23 +203,23 @@ matrix:
 
 
 script:
-  - ls wheelhouse
+  - ls wheel_test
 
 # script:
 #   - tox --installpkg ./dist/pupil_apriltags*.whl
 
-# deploy_template: &deploy_template
-#   on:
-#     tags: true
-#     branch: master
-#   skip_cleanup: true
+deploy_template: &deploy_template
+  on:
+    tags: true
+    branch: master
+  skip_cleanup: true
 
-# deploy:
-#   - provider: releases
-#     <<: *deploy_template
-#     api_key: $GitHubOAUTH
-#     file_glob: true
-#     file: "./dist/pupil_apriltags*"
+deploy:
+  - provider: releases
+    <<: *deploy_template
+    api_key: $GitHubOAUTH
+    file_glob: true
+    file: "./wheel_test/*"
 #   - provider: script
 #     <<: *deploy_template
 #     script: bash ./.travis/pypi_deploy.sh

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -x
+set -ev
 
 mkdir -p dependencies
 cd dependencies
