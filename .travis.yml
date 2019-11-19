@@ -105,37 +105,18 @@ env_py37: &env_py37
 #     - tox --installpkg wheel_test/*.whl -e py37
 #     - mv wheel_test/*.whl wheelhouse/
 
-# stages:
-#   - setup
-#   - build
+stages:
+  - setup
+  - build
 
-win_dependency_job: &win_dependency_job
-  os: windows
-  language: sh
-  # stage: setup
-  # workspaces:
-  #   create:
-  #     name: dependencies
-  #     paths:
-  #       - dependencies
-  cache:
-    directories:
-      - dependencies
-  script:
-    - ls dependencies
-    - true && [ -d "dependencies/ceres-solver" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
+
   
 
     
 win_base_job: &win_base_job
   os: windows
   language: sh
-  # stage: build
-  # workspaces:
-  #   use: dependencies
-  # cache:
-  #   directories:
-  #     - dependencies
+  stage: build
   before_install:
     # Set build parameters
     - export EIGEN_DIR=`pwd`/dependencies/eigen
@@ -165,11 +146,34 @@ win_base_job: &win_base_job
     # - mv wheel_test/*.whl wheelhouse/
 
 win_job_cached: &win_job_cached
-  <<: *win_base_job
   if: "commit_message !~ /@TRAVIS: rebuild-dependencies/"
+  <<: *win_base_job
   cache:
     directories:
       - dependencies
+
+win_job_rebuild: &win_job_rebuild
+  if: "commit_message =~ /@TRAVIS: rebuild-dependencies/"
+  <<: *win_base_job
+  workspaces:
+    use: dependencies
+
+win_dependency_job: &win_dependency_job
+  if: "commit_message =~ /@TRAVIS: rebuild-dependencies/"
+  os: windows
+  language: sh
+  stage: setup
+  workspaces:
+    create:
+      name: dependencies
+      paths:
+        - dependencies
+  cache:
+    directories:
+      - dependencies
+  script:
+    - ls dependencies
+    - true && [ -d "dependencies/ceres-solver" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
 
 
 
@@ -207,7 +211,12 @@ matrix:
     # - name: "Setup Windows dependencies"
     #   <<: *win_dependency_job
 
-    - name: "Build Windows wheels"
+    - name: "Rebuild Windows dependencies"
+      <<: *win_dependency_job
+    - name: "Build Windows wheels (rebuild dependencies)"
+      <<: *win_job_rebuild
+      
+    - name: "Build Windows wheels (cached dependencies)"
       <<: *win_job_cached
 
     # - name: "Ubuntu (manylinux)"
