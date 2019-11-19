@@ -74,9 +74,9 @@ win_base_job: &win_base_job
     - export CERES_DIR=`pwd`/dependencies/ceres-solver
 
   install:
-    - choco install vcredist-all vcredist140 vcredist2010
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+    - python -VV
     - python -m pip install -U pip
     # - pip wheel --no-deps -w wheel_test .
 
@@ -91,7 +91,7 @@ win_base_job: &win_base_job
     - python -c "from ctypes.util import find_library; print(find_library('python36'))"
     - pip install .
     - pip install pytest
-    - pytest tests
+    - python -vm pytest tests
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
