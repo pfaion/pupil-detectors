@@ -20,6 +20,7 @@ cd build
 cmake ..\
     -DCMAKE_BUILD_TYPE=Release\
     -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video\
+    -DBUILD_opencv_world=ON\
     -DCMAKE_INSTALL_PREFIX=../../opencv\
     -G"Visual Studio 15 2017 Win64"
 

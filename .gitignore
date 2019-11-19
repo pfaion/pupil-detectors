@@ -7,3 +7,6 @@ __pycache__/
 *.pyd
 .vscode
 .tox
+.venv
+dependencies
+.pytest_cache
