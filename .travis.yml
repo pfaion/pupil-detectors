@@ -34,6 +34,9 @@ stages:
 
   
 win_dependency_job: &win_dependency_job
+  # Job to rebuild dependencies on Windows.
+  # Will be triggered, if the commit message contains: "#TRAVIS: rebuild-dependencies"
+  # Dependencies are cached in ./dependencies across builds
   if: "commit_message =~ /#TRAVIS: rebuild-dependencies/"
   os: windows
   language: sh
@@ -41,8 +44,10 @@ win_dependency_job: &win_dependency_job
   cache:
     directories:
       - dependencies
+  before_script:
+    - echo "Rebuilding Windows dependency cache!"
+    - rm -rf dependencies
   script:
-      - echo "Rebuilding dependency cache."
       - ./.travis/win_setup_dependencies.sh
 
 
