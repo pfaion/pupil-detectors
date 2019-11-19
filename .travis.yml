@@ -82,6 +82,9 @@ win_base_job: &win_base_job
 
   before_script:
     - export PATH=`pwd`/dependencies/opencv/x64/vc15/bin:$PATH
+    - pip install .
+    - pip install pytest
+    - pytest tests
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
