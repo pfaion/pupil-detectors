@@ -50,14 +50,13 @@ win_base_job: &win_base_job
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - python -m pip install -U pip
     - pip wheel --no-deps -w wheel_test .
-  # before_script:
-  #   - pip install numpy opencv-python
-  #   - pip install wheel_test/*.whl
-  #   - pip install pytest
-  #   - pytest tests
-    # - pip install tox
-    # - tox --installpkg wheel_test/*.whl -e py36
-    # - mv wheel_test/*.whl wheelhouse/
+
+
+  before_script:
+    - export PATH=`pwd`/dependencies/opencv/x64/vc15/bin:$PATH
+    - pip install tox
+    - tox --installpkg wheel_test/*.whl -e py36
+    - mv wheel_test/*.whl wheelhouse/
 
     # - choco install python --version 3.7.4
     # - PATH=/c/Python37:/c/Python37/Scripts:$PATH
