@@ -33,13 +33,36 @@ stages:
 
 
   
+win_dependency_job: &win_dependency_job
+  if: "commit_message =~ /#TRAVIS: rebuild-dependencies/"
+  os: windows
+  language: sh
+  stage: setup
+  cache:
+    directories:
+      - dependencies
+  script:
+      - echo "Rebuilding dependency cache."
+      - ./.travis/win_setup_dependencies.sh
+
 
     
 win_base_job: &win_base_job
   os: windows
   language: sh
   stage: build
+  cache:
+    directories:
+      - dependencies
   before_install:
+    # check if cache exists
+    - |
+      if [ -d "dependencies/ceres-solver" ]; then
+        echo "Using cached dependencies!"
+      else
+        echo "Dependency cache not found! Rebuilding!"
+        ./.travis/win_setup_dependencies.sh
+      fi
     # Set build parameters
     - export EIGEN_DIR=`pwd`/dependencies/eigen
     - export OPENCV_DIR=`pwd`/dependencies/opencv
@@ -64,36 +87,6 @@ win_base_job: &win_base_job
     # - pip install tox
     # - tox --installpkg wheel_test/*.whl -e py37
     # - mv wheel_test/*.whl wheelhouse/
-
-win_job_cached: &win_job_cached
-  if: "commit_message !~ /@TRAVIS: rebuild-dependencies/"
-  <<: *win_base_job
-  cache:
-    directories:
-      - dependencies
-
-win_job_rebuild: &win_job_rebuild
-  if: "commit_message =~ /@TRAVIS: rebuild-dependencies/"
-  <<: *win_base_job
-  workspaces:
-    use: dependencies
-
-win_dependency_job: &win_dependency_job
-  if: "commit_message =~ /@TRAVIS: rebuild-dependencies/"
-  os: windows
-  language: sh
-  stage: setup
-  workspaces:
-    create:
-      name: dependencies
-      paths:
-        - dependencies
-  cache:
-    directories:
-      - dependencies
-  script:
-    - ls dependencies
-    - true && [ -d "dependencies/ceres-solver" ] && echo "Using cached dependencies!" || ./.travis/win_setup_dependencies.sh
 
 
 
@@ -134,11 +127,8 @@ matrix:
 
     - name: "Rebuild Windows dependencies"
       <<: *win_dependency_job
-    - name: "Build Windows wheels (rebuild dependencies)"
-      <<: *win_job_rebuild
-
-    - name: "Build Windows wheels (cached dependencies)"
-      <<: *win_job_cached
+    - name: "Build Windows wheels"
+      <<: *win_base_job
 
     # - name: "Ubuntu (manylinux)"
     #   <<: *ubuntu_base_job
