@@ -23,6 +23,7 @@ package = "pupil_detectors"
 
 install_requires = [
     "numpy",
+    "opencv-python",
 ]
 
 ########################################################################################

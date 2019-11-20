@@ -11,7 +11,7 @@ See COPYING and COPYING.LESSER for license details.
 """
 import typing as T
 
-# import cv2
+import cv2
 import numpy as np
 from cython.operator cimport dereference as deref
 from libcpp.memory cimport shared_ptr
@@ -150,42 +150,42 @@ cdef class Detector2DCore(DetectorBase):
 
         cdef int[:, ::1] integral
 
-        # if self.properties['coarse_detection'] and roi.width * roi.height > 320 * 240:
-        #     scale = 2 # half the integral image. boost up integral
-        #     # TODO maybe implement our own Integral so we don't have to half the image
-        #     user_roi_image = gray_img[roi.slices]
-        #     integral = cv2.integral(user_roi_image[::scale,::scale])
-        #     coarse_filter_max = self.properties['coarse_filter_max']
-        #     coarse_filter_min = self.properties['coarse_filter_min']
-        #     bounding_box, good_ones, bad_ones = center_surround(
-        #         integral,
-        #         coarse_filter_min / scale,
-        #         coarse_filter_max / scale
-        #     )
+        if self.properties['coarse_detection'] and roi.width * roi.height > 320 * 240:
+            scale = 2 # half the integral image. boost up integral
+            # TODO maybe implement our own Integral so we don't have to half the image
+            user_roi_image = gray_img[roi.slices]
+            integral = cv2.integral(user_roi_image[::scale,::scale])
+            coarse_filter_max = self.properties['coarse_filter_max']
+            coarse_filter_min = self.properties['coarse_filter_min']
+            bounding_box, good_ones, bad_ones = center_surround(
+                integral,
+                coarse_filter_min / scale,
+                coarse_filter_max / scale
+            )
 
-        #     if should_visualize:
-        #         # # draw the candidates
-        #         for v in good_ones:
-        #             p_x, p_y, w, response = v
-        #             x = p_x * scale + roi.x_min
-        #             y = p_y * scale + roi.y_min
-        #             width = w*scale
-        #             cv2.rectangle(
-        #                 color_img,
-        #                 (x, y),
-        #                 (x + width, y + width),
-        #                 (255, 255, 0)
-        #             )
+            if should_visualize:
+                # # draw the candidates
+                for v in good_ones:
+                    p_x, p_y, w, response = v
+                    x = p_x * scale + roi.x_min
+                    y = p_y * scale + roi.y_min
+                    width = w*scale
+                    cv2.rectangle(
+                        color_img,
+                        (x, y),
+                        (x + width, y + width),
+                        (255, 255, 0)
+                    )
 
-        #     x1, y1, x2, y2 = bounding_box
-        #     width = x2 - x1
-        #     height = y2 - y1
-        #     roi = Roi.from_rect(
-        #         x=x1 * scale + roi.x_min,
-        #         y=y1 * scale + roi.y_min,
-        #         width=width * scale,
-        #         height=height * scale
-        #     )
+            x1, y1, x2, y2 = bounding_box
+            width = x2 - x1
+            height = y2 - y1
+            roi = Roi.from_rect(
+                x=x1 * scale + roi.x_min,
+                y=y1 * scale + roi.y_min,
+                width=width * scale,
+                height=height * scale
+            )
 
         # every coordinates in the result are relative to the current ROI
         cppResultPtr = self.thisptr.detect(
