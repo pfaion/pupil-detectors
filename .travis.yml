@@ -49,6 +49,7 @@ win_dependency_job: &win_dependency_job
     - rm -rf dependencies
   script:
       - ./.travis/win_setup_dependencies.sh
+  deploy: false
 
 
     
@@ -84,6 +85,7 @@ win_base_job: &win_base_job
 
 
   after_deploy:
+    - pip install cython numpy
     - python setup.py install
     - pip install pytest
     - python -m pytest -s tests
