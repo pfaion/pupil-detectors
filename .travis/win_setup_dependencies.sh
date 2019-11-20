@@ -13,6 +13,7 @@ unzip -q opencv.zip
 cd opencv-3.4.5
 mkdir -p build
 cd build
+# Turn off all GUI frameworks, since they won't work on travis anyways.
 cmake ..\
     -DCMAKE_BUILD_TYPE=Release\
     -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video\

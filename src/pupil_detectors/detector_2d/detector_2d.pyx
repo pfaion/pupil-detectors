@@ -14,7 +14,12 @@ import typing as T
 try:
     import cv2
 except ImportError as e:
+    # NOTE: importing cv2 fails on travis Windows, so we need to account for this when
+    # running tests. See below where cv2 is used. Read discussion at:
+    # https://travis-ci.community/t/python-and-opencv-dll-load-fails-every-time/4431
     print(f"Error importing cv2 library: {e}")
+    cv2 = None
+
 import numpy as np
 from cython.operator cimport dereference as deref
 from libcpp.memory cimport shared_ptr
@@ -153,7 +158,7 @@ cdef class Detector2DCore(DetectorBase):
 
         cdef int[:, ::1] integral
 
-        if self.properties['coarse_detection'] and roi.width * roi.height > 320 * 240:
+        if self.properties['coarse_detection'] and roi.width * roi.height > 320 * 240 and cv2 is not None:
             scale = 2 # half the integral image. boost up integral
             # TODO maybe implement our own Integral so we don't have to half the image
             user_roi_image = gray_img[roi.slices]

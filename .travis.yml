@@ -1,36 +1,36 @@
 ################################################################################
 # OS JOB TEMPLATES
 ################################################################################
-
-# osx_base_job: &osx_base_job
-#   os: osx
-#   osx_image: xcode10.1
-#   language: sh
-#   stage: build
-#   before_install:
-#     - brew install ceres-solver opencv@3
-#     - brew upgrade pyenv
-#     - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-#     - pyenv install -s 3.6.8
-#     - pyenv install -s 3.7.4
-#   install:
-#     - mkdir -p wheelhouse
-#     - pyenv global 3.6.8
-#     - pip wheel --no-deps -w wheel_test .
-#     - pip install tox
-#     - tox --installpkg wheel_test/*.whl -e py36
-#     - mv wheel_test/*.whl wheelhouse/
-
-#     - pyenv global 3.7.4
-#     - pip wheel --no-deps -w wheel_test .
-#     - pip install tox
-#     - tox --installpkg wheel_test/*.whl -e py37
-#     - mv wheel_test/*.whl wheelhouse/
-
 stages:
   - setup
   - build
 
+
+osx_base_job: &osx_base_job
+  os: osx
+  osx_image: xcode10.1
+  language: sh
+  stage: build
+  before_install:
+    - brew install ceres-solver opencv@3
+    - brew upgrade pyenv
+    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
+    - pyenv install -s 3.6.8
+    - pyenv install -s 3.7.4
+  install:
+    - mkdir -p wheelhouse
+
+    - pyenv global 3.6.8
+    - pip wheel --no-deps -w wheel_test .
+    - pip install tox
+    - tox --installpkg wheel_test/*.whl -e py36
+    - mv wheel_test/*.whl wheelhouse/
+
+    - pyenv global 3.7.4
+    - pip wheel --no-deps -w wheel_test .
+    - pip install tox
+    - tox --installpkg wheel_test/*.whl -e py37
+    - mv wheel_test/*.whl wheelhouse/
 
   
 win_dependency_job: &win_dependency_job
@@ -52,7 +52,6 @@ win_dependency_job: &win_dependency_job
   deploy: false
 
 
-    
 win_base_job: &win_base_job
   os: windows
   language: sh
@@ -86,31 +85,29 @@ win_base_job: &win_base_job
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
 
-    # - choco install python --version 3.7.4
-    # - PATH=/c/Python37:/c/Python37/Scripts:$PATH
-    # - pip wheel --no-deps -w wheel_test .
-    # - pip install tox
-    # - tox --installpkg wheel_test/*.whl -e py37
-    # - mv wheel_test/*.whl wheelhouse/
+    - choco install python --version 3.7.4
+    - PATH=/c/Python36:/c/Python37/Scripts:$PATH
+    - python -m pip install -U pip
+    - pip wheel --no-deps -w wheel_test .
+    - pip install tox
+    - tox --installpkg wheel_test/*.whl -e py37
+    - mv wheel_test/*.whl wheelhouse/
 
 
-
-
-
-# ubuntu_base_job: &ubuntu_base_job
-#   os: linux
-#   language: sh
-#   services: docker
-#   stage: build
-#   before_install:
-#     - docker pull pupillabs/pupil-detectors:linux-latest
-#   install:
-#     - chmod +x ./.travis/linux_build_wheels.sh
-#     - >
-#       docker run --rm
-#       -v `pwd`:/io
-#       pupillabs/pupil-detectors:linux-latest
-#       /io/.travis/linux_build_wheels.sh
+ubuntu_base_job: &ubuntu_base_job
+  os: linux
+  language: sh
+  services: docker
+  stage: build
+  before_install:
+    - docker pull pupillabs/pupil-detectors:linux-latest
+  install:
+    - chmod +x ./.travis/linux_build_wheels.sh
+    - >
+      docker run --rm
+      -v `pwd`:/io
+      pupillabs/pupil-detectors:linux-latest
+      /io/.travis/linux_build_wheels.sh
   
 
 ################################################################################
@@ -119,24 +116,18 @@ win_base_job: &win_base_job
 
 matrix:
   include:
-    # - name: "OSX 10.12 (xcode9.2)"
-    #   <<: *osx_base_job
 
-    # - name: "OSX 10.14 (xcode11.2)"
-    #   <<: *osx_new_job
-
-    # - name: "OSX 10.13 (xcode10.1)"
-    #   <<: *osx_13
-    # - name: "Setup Windows dependencies"
-    #   <<: *win_dependency_job
+    - name: "OSX 10.13 (xcode10.1)"
+      <<: *osx_base_job
 
     - name: "Rebuild Windows dependencies"
       <<: *win_dependency_job
+
     - name: "Build Windows wheels"
       <<: *win_base_job
 
-    # - name: "Ubuntu (manylinux)"
-    #   <<: *ubuntu_base_job
+    - name: "Ubuntu (manylinux)"
+      <<: *ubuntu_base_job
 
 
 ################################################################################
@@ -145,10 +136,7 @@ matrix:
 
 
 script:
-  - ls wheel_test
-
-# script:
-#   - tox --installpkg ./dist/pupil_apriltags*.whl
+  - ls wheelhouse
 
 deploy_template: &deploy_template
   skip_cleanup: true
@@ -163,6 +151,8 @@ deploy:
     file_glob: true
     file: "./wheel_test/*"
     draft: true
+    name: "Automated wheel building test"
+    body: "Uploaded from travis"
 #   - provider: script
 #     <<: *deploy_template
 #     script: bash ./.travis/pypi_deploy.sh
