@@ -77,8 +77,6 @@ win_base_job: &win_base_job
     - echo $PATH
 
   install:
-    - choco install vcredist2015
-    - choco install kb2999226
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - python -m pip install -U pip
@@ -86,7 +84,7 @@ win_base_job: &win_base_job
 
 
   after_deploy:
-    - pip install .
+    - python setup.py install
     - pip install pytest
     - python -m pytest -s tests
     - pip install tox

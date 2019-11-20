@@ -9,23 +9,15 @@ Lesser General Public License (LGPL v3.0).
 See COPYING and COPYING.LESSER for license details.
 ---------------------------------------------------------------------------~(*)
 """
-print("2d import typing")
 import typing as T
 
-print("2d import cv2")
 import cv2
-print("2d import numpy")
 import numpy as np
-print("2d import cython")
 from cython.operator cimport dereference as deref
-print("2d import libcpp")
 from libcpp.memory cimport shared_ptr
-print("2d import numpy")
 from numpy.math cimport PI
 
-print("2d import coarse_pupil")
 from ..coarse_pupil cimport center_surround
-print("2d import c_types_wrapper")
 from ..c_types_wrapper cimport (
     CV_8UC1,
     CV_8UC3,
