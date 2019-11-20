@@ -44,11 +44,17 @@ win_dependency_job: &win_dependency_job
   cache:
     directories:
       - dependencies
-  before_script:
-    - echo "Rebuilding Windows dependency cache!"
-    - rm -rf dependencies
+  # before_script:
+  #   - echo "Rebuilding Windows dependency cache!"
+  #   - rm -rf dependencies
+  # script:
+  #     - ./.travis/win_setup_dependencies.sh
   script:
-      - ./.travis/win_setup_dependencies.sh
+    - rm -rf dependencies/opencv
+    - wget https://sourceforge.net/projects/opencvlibrary/files/3.4.5/opencv-3.4.5-vc14_vc15.exe
+    - ./opencv-3.4.5-vc14_vc15.exe -oopencv -y
+    - ls
+    - ls opencv
 
 
     
