@@ -7,7 +7,7 @@ set -ev
 mkdir -p dependencies
 cd dependencies
 
-Opencv
+# Opencv
 wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.5.zip
 unzip -q opencv.zip
 cd opencv-3.4.5
