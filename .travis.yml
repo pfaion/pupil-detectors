@@ -77,13 +77,15 @@ win_base_job: &win_base_job
     - echo $PATH
 
   install:
+    - choco install vcredist2015
+    - choco install kb2999226
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - python -m pip install -U pip
-    # - pip wheel --no-deps -w wheel_test .
+    - pip wheel --no-deps -w wheel_test .
 
 
-  before_script:
+  after_deploy:
     - pip install .
     - pip install pytest
     - python -m pytest -s tests
