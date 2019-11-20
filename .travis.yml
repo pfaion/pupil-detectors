@@ -86,7 +86,7 @@ win_base_job: &win_base_job
   before_script:
     - pip install .
     - pip install pytest
-    - python -m pytest tests
+    - python -m pytest -s tests
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/
