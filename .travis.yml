@@ -44,22 +44,15 @@ win_dependency_job: &win_dependency_job
   cache:
     directories:
       - dependencies
-  # before_script:
-  #   - echo "Rebuilding Windows dependency cache!"
-  #   - rm -rf dependencies
-  # script:
-  #     - ./.travis/win_setup_dependencies.sh
+  before_script:
+    - echo "Rebuilding Windows dependency cache!"
+    - rm -rf dependencies
   script:
-    - rm -rf dependencies/opencv
-    - wget https://sourceforge.net/projects/opencvlibrary/files/3.4.5/opencv-3.4.5-vc14_vc15.exe
-    - ./opencv-3.4.5-vc14_vc15.exe -oopencv -y
-    - ls
-    - ls opencv
+      - ./.travis/win_setup_dependencies.sh
 
 
     
 win_base_job: &win_base_job
-  env: PATH="${TRAVIS_BUILD_DIR}/dependencies/opencv/x64/vc15/bin:${TRAVIS_BUILD_DIR}/dependencies/opencv/x64/vc15/lib:$PATH"
   os: windows
   language: sh
   stage: build
@@ -79,27 +72,21 @@ win_base_job: &win_base_job
     - export EIGEN_DIR=`pwd`/dependencies/eigen
     - export OPENCV_DIR=`pwd`/dependencies/opencv
     - export CERES_DIR=`pwd`/dependencies/ceres-solver
+    - export PATH=`pwd`/dependencies/opencv/x64/vc15/bin:$PATH
+    - export PATH=`pwd`/dependencies/opencv/bin:$PATH
+    - echo $PATH
 
   install:
     - choco install python --version 3.6.8
     - PATH=/c/Python36:/c/Python36/Scripts:$PATH
-    - python -VV
     - python -m pip install -U pip
     # - pip wheel --no-deps -w wheel_test .
 
 
   before_script:
-    - python -c "from ctypes.util import find_library; print(find_library('opencv_world345'))"
-    - export PATH=`pwd`/dependencies/opencv/x64/vc15/bin:$PATH
-    - python -c "from ctypes.util import find_library; print(find_library('opencv_world345'))"
-    - python -c "from ctypes.util import find_library; print(find_library('vcruntime140'))"
-    - python -c "from ctypes.util import find_library; print(find_library('msvcp140'))"
-    - python -c "from ctypes.util import find_library; print(find_library('kernel32'))"
-    - python -c "from ctypes.util import find_library; print(find_library('python36'))"
-    - echo $PATH
     - pip install .
     - pip install pytest
-    - python -vvm pytest tests
+    - python -m pytest tests
     - pip install tox
     - tox --installpkg wheel_test/*.whl -e py36
     - mv wheel_test/*.whl wheelhouse/

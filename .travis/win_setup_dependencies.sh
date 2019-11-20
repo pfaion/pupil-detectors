@@ -17,16 +17,19 @@ cd dependencies
 #     -DBUILD_opencv_world=ON\
 #     -DCMAKE_INSTALL_PREFIX=../../opencv\
 #     -G"Visual Studio 15 2017 Win64"
+# cmake --build . --target INSTALL --config Release
+# cd ../..
+# rm -rf opencv.zip
+# rm -rf opencv-3.4.5
 
 wget https://sourceforge.net/projects/opencvlibrary/files/3.4.5/opencv-3.4.5-vc14_vc15.exe
-./opencv-3.4.5-vc14_vc15.exe -oopencv -y
-ls
+./opencv-3.4.5-vc14_vc15.exe -y
+mv opencv opencvfull
+mv opencvfull/build opencv
+rm -rf opencvfull
 ls opencv
+rm -rf opencv-3.4.5-vc14_vc15.exe
 
-cmake --build . --target INSTALL --config Release
-cd ../..
-rm -rf opencv.zip
-rm -rf opencv-3.4.5
 
 # Eigen3
 wget -O eigen3.zip https://bitbucket.org/eigen/eigen/get/3.3.3.zip
