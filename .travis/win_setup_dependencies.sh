@@ -28,18 +28,6 @@ cd ../..
 rm -rf opencv.zip
 rm -rf opencv-3.4.5
 
-# # Opencv
-# # Downloading the precompiled installer for windows and executing via cmd is actually
-# # faster than compiling yourself. Note: The .exe is a 7-zip self extracting archive,
-# # which explains the non-exe-standard cli argument -y. See here:
-# # https://sevenzip.osdn.jp/chm/cmdline/switches/sfx.htm
-# wget https://sourceforge.net/projects/opencvlibrary/files/3.4.5/opencv-3.4.5-vc14_vc15.exe
-# ./opencv-3.4.5-vc14_vc15.exe -y
-# mv opencv opencvfull
-# mv opencvfull/build opencv
-# rm -rf opencvfull
-# rm -rf opencv-3.4.5-vc14_vc15.exe
-
 # Eigen3
 wget -O eigen3.zip https://bitbucket.org/eigen/eigen/get/3.3.3.zip
 unzip -q eigen3.zip

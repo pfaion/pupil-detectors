@@ -11,7 +11,10 @@ See COPYING and COPYING.LESSER for license details.
 """
 import typing as T
 
-import cv2
+try:
+    import cv2
+except ImportError as e:
+    print(f"Error importing cv2 library: {e}")
 import numpy as np
 from cython.operator cimport dereference as deref
 from libcpp.memory cimport shared_ptr
