@@ -49,7 +49,6 @@ cmake .\
     -DCERES_USE_OPENMP=ON\
     -DBUILD_TESTING=OFF\
     -DBUILD_EXAMPLES=OFF\
-    -DSCHUR_SPECIALIZATIONS=OFF\
     -G"Visual Studio 15 2017 Win64"
 cmake --build . --config Release --target ceres
 cmake --install .

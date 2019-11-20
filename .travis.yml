@@ -149,9 +149,9 @@ deploy:
     <<: *deploy_template
     api_key: $GitHubOAUTH
     file_glob: true
-    file: "./wheel_test/*"
+    file: "./wheelhouse/*"
     draft: true
-    name: "Automated wheel building test"
+    name: "Automated wheel building test (${TRAVIS_OS_NAME})"
     body: "Uploaded from travis"
 #   - provider: script
 #     <<: *deploy_template
