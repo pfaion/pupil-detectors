@@ -41,3 +41,8 @@ docker tag pupillabs/pupil-detectors:linux-$NEW_VERSION pupillabs/pupil-detector
 docker push pupillabs/pupil-detectors:linux-$NEW_VERSION
 docker push pupillabs/pupil-detectors:linux-latest
 ```
+
+You can also run the image locally to build wheels (from a Linux machine). Run this command from the repository root. Note that this will create a folder `wheelhouse` from the root user (docker). So you have to use sudo in order to remove it again!
+```sh
+docker run --rm -v `pwd`:/io pupillabs/pupil-detectors:linux-$NEW_VERSION /io/.travis/linux_build_wheels.sh
+```

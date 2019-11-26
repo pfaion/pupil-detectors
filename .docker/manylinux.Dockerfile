@@ -2,7 +2,7 @@ FROM quay.io/pypa/manylinux2010_x86_64
 
 ### Install OpenCV
 # NOTE: There's no centOS package for opencv 3, so we have to build from source
-RUN yum -y install wget
+RUN yum -y install wget tbb-devel
 # NOTE: 3.4.5 has a bug and won't compile here, using 3.4.6 instead
 RUN wget https://github.com/opencv/opencv/archive/3.4.6.zip
 RUN unzip 3.4.6.zip
