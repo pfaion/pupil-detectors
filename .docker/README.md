@@ -24,13 +24,20 @@ This is inspired by other Docker Hub repositories that contain different build-t
 As the dependencies won't change very often we will manually build the image for now, instead of using continuous integration.
 This way we can just keep the Dockerfile in the code repository without the need for an additional repo.
 
-Build the image with:
+First login to Docker Hub via the docker CLI:
 ```sh
-docker build -t pupillabs/pupil-detectors:linux-<TAG> - < .docker/manylinux.Dockerfile
+# Login to docker hub
+docker login
 ```
 
-Deploy the image to Docker Hub:
+Now build the image (don't forget to substitute **\<TAG\>**) and deploy the image to Docker Hub. 
 ```sh
-docker login
-docker push pupillabs/pupil-detectors:linux-<TAG>
+# Change here to new version tag
+NEW_VERSION=1.0
+
+docker build -t pupillabs/pupil-detectors:linux-$NEW_VERSION - < .docker/manylinux.Dockerfile
+docker tag pupillabs/pupil-detectors:linux-$NEW_VERSION pupillabs/pupil-detectors:linux-latest
+
+docker push pupillabs/pupil-detectors:linux-$NEW_VERSION
+docker push pupillabs/pupil-detectors:linux-$NEW_VERSION
 ```

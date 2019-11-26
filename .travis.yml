@@ -28,7 +28,7 @@ script:
 deploy_template: &deploy_template
   skip_cleanup: true
   on:
-    all_branches: true
+    branch: master
 
 deploy:
   - provider: releases
