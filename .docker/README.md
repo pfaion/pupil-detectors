@@ -39,5 +39,5 @@ docker build -t pupillabs/pupil-detectors:linux-$NEW_VERSION - < .docker/manylin
 docker tag pupillabs/pupil-detectors:linux-$NEW_VERSION pupillabs/pupil-detectors:linux-latest
 
 docker push pupillabs/pupil-detectors:linux-$NEW_VERSION
-docker push pupillabs/pupil-detectors:linux-$NEW_VERSION
+docker push pupillabs/pupil-detectors:linux-latest
 ```
