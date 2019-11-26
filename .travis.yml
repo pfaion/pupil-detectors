@@ -1,148 +1,34 @@
-################################################################################
-# OS JOB TEMPLATES
-################################################################################
-stages:
-  - setup
-  - build
+# This is only used for building manylinux wheels in a docker image.
 
+name: "Ubuntu (manylinux)"
+os: linux
+language: sh
+services: docker
 
-osx_base_job: &osx_base_job
-  os: osx
-  osx_image: xcode10.1
-  language: sh
-  stage: build
-  before_install:
-    - brew install ceres-solver opencv@3
-    - brew upgrade pyenv
-    - export PATH="/Users/travis/.pyenv/shims:${PATH}"
-    - pyenv install -s 3.6.8
-    - pyenv install -s 3.7.4
-  install:
-    - mkdir -p wheelhouse
+before_install:
+  - docker pull pupillabs/pupil-detectors:linux-latest
 
-    - pyenv global 3.6.8
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py36
-    - mv wheel_test/*.whl wheelhouse/
-
-    - pyenv global 3.7.4
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py37
-    - mv wheel_test/*.whl wheelhouse/
-
+install:
+  - chmod +x ./.travis/linux_build_wheels.sh
+  - >
+    docker run --rm
+    -v `pwd`:/io
+    pupillabs/pupil-detectors:linux-latest
+    /io/.travis/linux_build_wheels.sh
   
-win_dependency_job: &win_dependency_job
-  # Job to rebuild dependencies on Windows.
-  # Will be triggered, if the commit message contains: "#TRAVIS: rebuild-dependencies"
-  # Dependencies are cached in ./dependencies across builds
-  if: "commit_message =~ /#TRAVIS: rebuild-dependencies/"
-  os: windows
-  language: sh
-  stage: setup
-  cache:
-    directories:
-      - dependencies
-  before_script:
-    - echo "Rebuilding Windows dependency cache!"
-    - rm -rf dependencies
-  script:
-      - ./.travis/win_setup_dependencies.sh
-  deploy: false
-
-
-win_base_job: &win_base_job
-  os: windows
-  language: sh
-  stage: build
-  cache:
-    directories:
-      - dependencies
-  before_install:
-    # check if cache exists
-    - |
-      if [ -d "dependencies/ceres-solver" ]; then
-        echo "Using cached dependencies!"
-      else
-        echo "Dependency cache not found! Rebuilding!"
-        ./.travis/win_setup_dependencies.sh
-      fi
-    # Set build parameters
-    - export EIGEN_DIR=`pwd`/dependencies/eigen
-    - export OPENCV_DIR=`pwd`/dependencies/opencv
-    - export CERES_DIR=`pwd`/dependencies/ceres-solver
-    - export PATH=`pwd`/dependencies/opencv/x64/vc15/bin:$PATH
-
-  install:
-    - mkdir -p wheelhouse
-    
-    - choco install python --version 3.6.8
-    - PATH=/c/Python36:/c/Python36/Scripts:$PATH
-    - python -m pip install -U pip
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py36
-    - mv wheel_test/*.whl wheelhouse/
-
-    - choco install python --version 3.7.4
-    - PATH=/c/Python36:/c/Python37/Scripts:$PATH
-    - python -m pip install -U pip
-    - pip wheel --no-deps -w wheel_test .
-    - pip install tox
-    - tox --installpkg wheel_test/*.whl -e py37
-    - mv wheel_test/*.whl wheelhouse/
-
-
-ubuntu_base_job: &ubuntu_base_job
-  os: linux
-  language: sh
-  services: docker
-  stage: build
-  before_install:
-    - docker pull pupillabs/pupil-detectors:linux-latest
-  install:
-    - chmod +x ./.travis/linux_build_wheels.sh
-    - >
-      docker run --rm
-      -v `pwd`:/io
-      pupillabs/pupil-detectors:linux-latest
-      /io/.travis/linux_build_wheels.sh
-  
-
-################################################################################
-# DEFINE JOB MATRIX
-################################################################################
-
-matrix:
-  include:
-
-    - name: "OSX 10.13 (xcode10.1)"
-      <<: *osx_base_job
-
-    - name: "Rebuild Windows dependencies"
-      <<: *win_dependency_job
-
-    - name: "Build Windows wheels"
-      <<: *win_base_job
-
-    - name: "Ubuntu (manylinux)"
-      <<: *ubuntu_base_job
-
-
-################################################################################
-# RUN AND DEPLOY (OS INDEPENDENT)
-################################################################################
-
+before_script:
+  - ls wheelhouse
+  - NUM_WHEELS=`ls -f wheelhouse/*.whl | wc -l`
+  - echo "Built ${NUM_WHEELS} wheels."
 
 script:
-  - ls wheelhouse
+  # check that we have the right number of wheels built!
+  - "[ ${NUM_WHEELS} -eq 3 ] || exit 1"
 
 deploy_template: &deploy_template
   skip_cleanup: true
   on:
     all_branches: true
-
 
 deploy:
   - provider: releases
@@ -151,8 +37,9 @@ deploy:
     file_glob: true
     file: "./wheelhouse/*"
     draft: true
-    name: "Automated wheel building test (${TRAVIS_OS_NAME})"
+    name: "Automated wheel building test"
     body: "Uploaded from travis"
+
 #   - provider: script
 #     <<: *deploy_template
 #     script: bash ./.travis/pypi_deploy.sh

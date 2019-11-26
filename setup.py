@@ -44,49 +44,25 @@ include_dirs += [
 
 # Platform-specific setup
 if platform.system() == "Windows":
-    # NOTE: In previous versions, the dependencies for Windows had to be installed into
-    # C:\work. Now we allow for dynamic library location via environment variables:
-    # - OPENCV_DIR
-    # - EIGEN_DIR
-    # - CERES_DIR
-    # The legacy functionality is still included though for backwards compatibility.
+    # OpenCV
+    OPENCV = "C:\\work\\opencv\\build"
+    include_dirs.append(f"{OPENCV}\\include")
+    library_dirs.append(f"{OPENCV}\\x64\\vc14\\lib")
+    libraries.append("opencv_world345")
 
-    if "OPENCV_DIR" in os.environ:
-        OPENCV_DIR = os.environ["OPENCV_DIR"]
-        include_dirs.append(f"{OPENCV_DIR}\\include")
-        library_dirs.append(f"{OPENCV_DIR}\\x64\\vc15\\lib")
-        libraries.append("opencv_world345")
-    else:
-        # legacy fallback for old manual windows setup
-        OPENCV = "C:\\work\\opencv\\build"
-        include_dirs.append(f"{OPENCV}\\include")
-        library_dirs.append(f"{OPENCV}\\x64\\vc14\\lib")
-        libraries.append("opencv_world345")
+    # Eigen
+    EIGEN = "C:\\work\\ceres-windows\\Eigen"
+    include_dirs.append(f"{EIGEN}")
 
-    if "EIGEN_DIR" in os.environ:
-        EIGEN_DIR = os.environ["EIGEN_DIR"]
-        include_dirs.append(EIGEN_DIR)
-    else:
-        # legacy fallback for old manual windows setup
-        EIGEN = "C:\\work\\ceres-windows\\Eigen"
-        include_dirs.append(f"{EIGEN}")
-
-    if "CERES_DIR" in os.environ:
-        CERES_DIR = os.environ["CERES_DIR"]
-        include_dirs.append(f"{CERES_DIR}\\include")
-        include_dirs.append(f"{CERES_DIR}\\include\\ceres\\internal\\miniglog")
-        library_dirs.append(f"{CERES_DIR}\\lib")
-        libraries.append("ceres")
-    else:
-        # legacy fallback for old manual windows setup
-        CERES = "C:\\work\\ceres-windows"
-        # NOTE: ceres for windows needs to link against glog
-        # include_dirs.append(f"{CERES}")
-        include_dirs.append(f"{CERES}\\ceres-solver\\include")
-        include_dirs.append(f"{CERES}\\glog\\src\\windows")
-        library_dirs.append(f"{CERES}\\x64\\Release")
-        libraries.append("ceres_static")
-        libraries.append("libglog_static")
+    # Ceres
+    CERES = "C:\\work\\ceres-windows"
+    # NOTE: ceres for windows needs to link against glog
+    # include_dirs.append(f"{CERES}")
+    include_dirs.append(f"{CERES}\\ceres-solver\\include")
+    include_dirs.append(f"{CERES}\\glog\\src\\windows")
+    library_dirs.append(f"{CERES}\\x64\\Release")
+    libraries.append("ceres_static")
+    libraries.append("libglog_static")
 
 else:
     # Opencv
@@ -141,7 +117,7 @@ else:
 
 extra_compile_args = []
 extra_compile_args += [
-    "-w",  # suppress all warnings (TODO: Why do we do this?)
+    "-w",  # suppress all warnings (we get a lot of warnings from the c++ code)
 ]
 if platform.system() == "Windows":
     # NOTE: c++11 is not available as compiler flag on MSVC
@@ -213,18 +189,6 @@ extensions = [
 ########################################################################################
 # Setup Script
 
-print("INCLUDE DIRS:")
-print(*(f" - {v}\n" for v in include_dirs), sep="")
-
-print("LIBRARY DIRS:")
-print(*(f" - {v}\n" for v in library_dirs), sep="")
-
-print("LIBRARIES:")
-print(*(f" - {v}\n" for v in libraries), sep="")
-
-print("COMPILE ARGS:")
-print(*(f" - {v}\n" for v in extra_compile_args), sep="")
-
 if __name__ == "__main__":
     setup(
         author="Pupil Labs",
@@ -237,5 +201,5 @@ if __name__ == "__main__":
         packages=find_packages(package_dir),
         package_dir={"": package_dir},
         url="https://github.com/pupil-labs/pupil-detectors",
-        version="0.2",
+        version="0.3.0",
     )
