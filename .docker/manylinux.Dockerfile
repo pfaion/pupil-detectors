@@ -9,7 +9,7 @@ RUN unzip 3.4.6.zip
 RUN cd opencv-3.4.6 \
     && mkdir -p build \
     && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video .. \
+    && cmake -DCMAKE_BUILD_TYPE=Release -DWITH_TBB=ON -DWITH_CUDA=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_LIST=core,highgui,videoio,imgcodecs,imgproc,video .. \
     && make -j8 \
     && make install
 # Cleanup
