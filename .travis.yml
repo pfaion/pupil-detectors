@@ -23,7 +23,7 @@ before_script:
 
 script:
   # check that we have the right number of wheels built!
-  - "[ ${NUM_WHEELS} -eq 3 ] || exit 1"
+  - "[ ${NUM_WHEELS} -eq 2 ] || exit 1"
 
 deploy_template: &deploy_template
   skip_cleanup: true
